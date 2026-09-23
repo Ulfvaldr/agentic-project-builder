@@ -1,0 +1,98 @@
+[
+  {
+    "ticker": "SPY",
+    "name": "State Street SPDR S&P 500 ETF Trust",
+    "issuer": "State Street Global Advisors",
+    "expenseRatio": 0.0945,
+    "aum": 806.18442,
+    "inceptionDate": "1993-01-22",
+    "benchmark": "S&P 500 Index / U.S. large blend equities",
+    "holdingsCount": 504,
+    "topSectors": [
+      { "name": "Information Technology", "weight": 39.28 },
+      { "name": "Financials", "weight": 11.53 },
+      { "name": "Communication Services", "weight": 10.00 }
+    ],
+    "topHoldings": ["NVIDIA", "Apple", "Microsoft", "Amazon", "Alphabet Class A"],
+    "performance": { "ytdReturn": 13.05, "oneYearReturn": 20.17, "asOfDate": "2026-08-31" },
+    "asOfDate": "2026-09-22",
+    "fieldAsOfDates": {
+      "expenseRatio": "2026-09-23",
+      "aum": "2026-09-22",
+      "inceptionDate": "2026-09-23",
+      "benchmark": "2026-09-23",
+      "holdingsCount": "2026-09-22",
+      "topSectors": "2026-09-22",
+      "topHoldings": "2026-09-22",
+      "performance": "2026-08-31"
+    },
+    "sources": [
+      { "label": "SPDR SPY product page", "publisher": "State Street Global Advisors", "url": "https://www.ssga.com/us/en/intermediary/etfs/state-street-spdr-sp-500-etf-trust-spy" },
+      { "label": "SPDR SPY fact sheet", "publisher": "State Street Global Advisors", "url": "https://www.ssga.com/us/en/intermediary/library-content/products/factsheets/etfs/us/factsheet-us-en-spy.pdf" }
+    ]
+  },
+  {
+    "ticker": "QQQ",
+    "name": "Invesco QQQ Trust",
+    "issuer": "Invesco",
+    "expenseRatio": 0.18,
+    "aum": 498.64,
+    "inceptionDate": "1999-03-09",
+    "benchmark": "Nasdaq-100 Index / U.S. large growth equities",
+    "holdingsCount": 102,
+    "topSectors": [
+      { "name": "Technology", "weight": 66.36 },
+      { "name": "Consumer Discretionary", "weight": 16.65 },
+      { "name": "Telecommunications", "weight": 4.72 }
+    ],
+    "topHoldings": ["NVIDIA", "Apple", "Microsoft", "Micron Technology", "Advanced Micro Devices"],
+    "performance": { "ytdReturn": 12.15, "oneYearReturn": 26.27, "asOfDate": "2026-08-30" },
+    "asOfDate": "2026-09-21",
+    "fieldAsOfDates": {
+      "expenseRatio": "2026-09-21",
+      "aum": "2026-09-21",
+      "inceptionDate": "2026-09-21",
+      "benchmark": "2026-09-21",
+      "holdingsCount": "2026-09-21",
+      "topSectors": "2026-08-30",
+      "topHoldings": "2026-09-21",
+      "performance": "2026-08-30"
+    },
+    "sources": [
+      { "label": "Invesco QQQ overview and holdings", "publisher": "Invesco", "url": "https://www.invesco.com/qqq-etf/en/about.html" },
+      { "label": "Invesco QQQ performance", "publisher": "Invesco", "url": "https://www.invesco.com/qqq-etf/en/performance.html" }
+    ]
+  },
+  {
+    "ticker": "VTI",
+    "name": "Vanguard Total Stock Market ETF",
+    "issuer": "Vanguard",
+    "expenseRatio": 0.03,
+    "aum": 690.1,
+    "inceptionDate": "2001-05-24",
+    "benchmark": "Morningstar US Total Market Index / broad U.S. equities",
+    "holdingsCount": 3507,
+    "topSectors": [
+      { "name": "Technology", "weight": 40.90 },
+      { "name": "Consumer Discretionary", "weight": 12.00 },
+      { "name": "Industrials", "weight": 11.80 }
+    ],
+    "topHoldings": ["NVIDIA", "Apple", "Microsoft", "Amazon", "Alphabet Class A"],
+    "performance": { "ytdReturn": 13.45, "oneYearReturn": 20.24, "asOfDate": "2026-08-31" },
+    "asOfDate": "2026-08-31",
+    "fieldAsOfDates": {
+      "expenseRatio": "2026-04-28",
+      "aum": "2026-08-31",
+      "inceptionDate": "2026-08-31",
+      "benchmark": "2026-08-31",
+      "holdingsCount": "2026-08-31",
+      "topSectors": "2026-08-31",
+      "topHoldings": "2026-08-31",
+      "performance": "2026-08-31"
+    },
+    "sources": [
+      { "label": "Vanguard VTI profile", "publisher": "Vanguard", "url": "https://investor.vanguard.com/investment-products/etfs/profile/vti" },
+      { "label": "Vanguard VTI fact sheet", "publisher": "Vanguard", "url": "https://fund-docs.vanguard.com/F0970.pdf" }
+    ]
+  }
+]

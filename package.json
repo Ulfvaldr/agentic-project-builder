@@ -1,0 +1,12 @@
+{
+  "name": "agentic-project-builder-etf-demo",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "start": "node scripts/serve.mjs",
+    "test": "node --test",
+    "validate:fixtures": "node scripts/validate-fixtures.mjs",
+    "check:browser": "node scripts/check-browser-console.mjs"
+  }
+}
