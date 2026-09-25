@@ -9,7 +9,7 @@ Public workflow evidence:
 
 Acceptance criteria captured for this implementation:
 
-- User can select two distinct fixture-backed ETFs and every comparison field updates side by side.
+- User can select two distinct fixture-backed ETFs, and every comparison field updates side by side.
 - A deterministic plain-language explanation identifies material differences without giving investment advice.
 - Source URLs, data as-of date, and data-freshness/non-advice disclaimer are visible.
 - Same or invalid selections are blocked or clearly reported.
@@ -35,7 +35,7 @@ Commands used by Brokkr:
 
 Failures/retries/design changes:
 
-- Initial unit test run had one assertion mismatch in explanation wording; Brokkr tightened the assertion to the actual deterministic sentence and re-ran `npm test` successfully.
+- Initial unit test run had one assertion mismatch in explanation wording. Brokkr tightened the assertion to the actual deterministic sentence and re-ran `npm test` successfully.
 - Invesco's downloadable fact-sheet URL surfaced a country/role splash during extraction, so the fixture keeps the fact-sheet URL as attribution but relies on the accessible Invesco QQQ overview page for page-extracted holdings/AUM/performance values.
 - QQQ total expense ratio on the overview extraction appeared as `0%`, inconsistent with Invesco search/fact-sheet snippets showing `0.18%`; the fixture uses `0.18%` and cites the Invesco fact sheet/product materials.
 - Correction cycle 1 fixed the missing favicon browser-log regression by adding an inline SVG favicon and a dependency-free `npm run check:browser` CDP smoke test that records Runtime, Log, and HTTP 4xx/5xx failures across initial load and reload.

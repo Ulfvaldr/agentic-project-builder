@@ -1,15 +1,15 @@
 # Agentic Project Builder
 
-A lean Hermes team demo that turns a high-level software goal into a working artifact through the existing Kanban task graph:
+A lean Hermes team demo that takes a high-level software goal and turns it into a working artifact through the existing Kanban task graph:
 
 User goal → Odin plans → Bao researches → Brokkr implements → Veritas independently reviews → Human approves release.
 
-This repository directory contains the first demo artifact: a zero-framework ETF comparison web app backed by committed fixture data.
+This repository contains the first demo artifact: a zero-framework ETF comparison web app backed by committed fixture data.
 
 ## Demo behavior
 
 - Choose two distinct ETFs from `fixtures/etfs.json`.
-- See side-by-side researched fields: ticker/name, issuer, expense ratio, AUM, inception date, benchmark/category, holdings/sector exposure, and dated performance snapshot.
+- See researched fields side by side: ticker/name, issuer, expense ratio, AUM, inception date, benchmark/category, holdings/sector exposure, and dated performance snapshot.
 - Read a deterministic explanation of material differences between the selected funds.
 - See source links, fixture field-level as-of dates, and a non-advice/data-freshness disclaimer.
 - Same or invalid selections are reported instead of compared.
