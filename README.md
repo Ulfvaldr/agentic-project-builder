@@ -17,9 +17,19 @@ This repository contains the first demo artifact: a zero-framework ETF compariso
 
 ## Run locally
 
-Requirements: Node.js 20+ or any recent Node version with the built-in `node --test` runner.
+Requirements: Python 3.11+ and Node.js 20+ (or any recent Node version with the built-in `node --test` runner).
 
-From this directory:
+The browser still executes the existing JavaScript implementation while Python parity is reviewed. Run both stacks from this directory:
+
+    PYTHONPATH=src python -m agentic_project_builder validate-fixtures
+    PYTHONPATH=src python -m unittest discover -s tests_python -v
+    PYTHONPATH=src python -m agentic_project_builder serve
+
+In another terminal, check the Python-served page with the Python browser checker:
+
+    PYTHONPATH=src python -m agentic_project_builder check-browser
+
+The original JavaScript commands remain supported and are required during parity validation:
 
     npm run validate:fixtures
     npm test
@@ -48,6 +58,9 @@ To use a different port:
 - `tests/comparison.test.js` — Node built-in unit tests
 - `scripts/serve.mjs` — small local static server for the demo
 - `scripts/validate-fixtures.mjs` — schema sanity checks for fixture records
+- `src/agentic_project_builder/` — parallel dependency-free Python models, comparison, validation, CLI, server, and browser checker
+- `tests_python/` — Python unit, CLI, server-safety, and JS/Python cross-runtime parity tests
+- `pyproject.toml` — Python 3.11+ package and console-script metadata (no runtime dependencies)
 - `docs/fixture-schema.md` — fixture contract and refresh seam
 - `docs/workflow-note.md` — Odin → Bao → Brokkr → Veritas workflow evidence
 

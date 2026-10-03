@@ -21,6 +21,10 @@ Validation command:
 
     npm run validate:fixtures
 
+Parallel Python validation command (the JavaScript validator remains during parity review):
+
+    PYTHONPATH=src python -m agentic_project_builder validate-fixtures
+
 Refresh seam:
 
 1. A human retrieves current issuer pages/fact sheets and, optionally, SEC EDGAR N-PORT holdings as a cross-check.
