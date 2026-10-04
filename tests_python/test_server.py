@@ -42,13 +42,13 @@ class StaticServerTests(unittest.TestCase):
             response = connection.recv(256)
         return int(response.split(b" ", 2)[1])
 
-    def test_serves_root_query_and_mime_types_like_node_server(self) -> None:
+    def test_serves_root_query_and_mime_types(self) -> None:
         self.assertEqual(self.get("/?cache=no")[:2], (200, "text/html; charset=utf-8"))
         self.assertEqual(self.get("/")[2], b"<h1>demo</h1>")
         self.assertEqual(self.get("/app.js")[:2], (200, "text/javascript; charset=utf-8"))
         self.assertEqual(self.get("/data.bin")[:2], (200, "application/octet-stream"))
 
-    def test_node_server_serves_static_content_regardless_of_http_method(self) -> None:
+    def test_server_serves_static_content_regardless_of_http_method(self) -> None:
         for method in ("POST", "TRACE", "PROPFIND"):
             with self.subTest(method=method):
                 request = Request(self.base_url + "/app.js", method=method, data=b"ignored")
@@ -56,14 +56,14 @@ class StaticServerTests(unittest.TestCase):
                     self.assertEqual(response.status, 200)
                     self.assertEqual(response.read(), b"export {};")
 
-    def test_accepts_node_v22_method_tokens_and_rejects_unknown_tokens(self) -> None:
-        node_methods = (
+    def test_accepts_known_http_method_tokens_and_rejects_unknown_tokens(self) -> None:
+        known_methods = (
             "ACL", "BIND", "CHECKOUT", "CONNECT", "COPY", "DELETE", "GET", "HEAD", "LINK", "LOCK",
             "M-SEARCH", "MERGE", "MKACTIVITY", "MKCALENDAR", "MKCOL", "MOVE", "NOTIFY", "OPTIONS",
             "PATCH", "POST", "PROPFIND", "PROPPATCH", "PURGE", "PUT", "QUERY", "REBIND", "REPORT",
             "SEARCH", "SOURCE", "SUBSCRIBE", "TRACE", "UNBIND", "UNLINK", "UNLOCK", "UNSUBSCRIBE",
         )
-        for method in node_methods:
+        for method in known_methods:
             with self.subTest(method=method):
                 self.assertEqual(self.raw_status(method), 200)
         self.assertEqual(self.raw_status("BREW"), 400)

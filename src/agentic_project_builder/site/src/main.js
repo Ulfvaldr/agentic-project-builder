@@ -1,7 +1,4 @@
-import { buildComparison, fieldDateSummary, fixtureAsOfRange } from './comparison.js';
-import { loadEtfFixtures } from './dataProvider.js';
-
-const state = { etfs: [] };
+const state = { data: null };
 const leftSelect = document.querySelector('#left-etf');
 const rightSelect = document.querySelector('#right-etf');
 const validationMessage = document.querySelector('#validation-message');
@@ -17,39 +14,46 @@ init().catch((error) => {
 });
 
 async function init() {
-  state.etfs = await loadEtfFixtures();
-  populateSelect(leftSelect, state.etfs, 'SPY');
-  populateSelect(rightSelect, state.etfs, 'QQQ');
+  const response = await fetch('browser-data.json', { cache: 'no-store' });
+  if (!response.ok) throw new Error(`Unable to load browser data: ${response.status}`);
+  state.data = await response.json();
+  populateSelect(leftSelect, state.data.funds, 'SPY');
+  populateSelect(rightSelect, state.data.funds, 'QQQ');
   leftSelect.addEventListener('change', render);
   rightSelect.addEventListener('change', render);
-  renderSources(state.etfs);
+  renderMetadata();
   render();
 }
 
-function populateSelect(select, etfs, selectedTicker) {
-  select.replaceChildren(...etfs.map((etf) => {
+function populateSelect(select, funds, selectedTicker) {
+  select.replaceChildren(...funds.map((fund) => {
     const option = document.createElement('option');
-    option.value = etf.ticker;
-    option.textContent = `${etf.ticker} — ${etf.name}`;
-    option.selected = etf.ticker === selectedTicker;
+    option.value = fund.ticker;
+    option.textContent = `${fund.ticker} — ${fund.name}`;
+    option.selected = fund.ticker === selectedTicker;
     return option;
   }));
 }
 
 function render() {
-  const comparison = buildComparison(leftSelect.value, rightSelect.value, state.etfs);
+  const comparison = state.data.comparisons[`${leftSelect.value}:${rightSelect.value}`];
   validationMessage.textContent = comparison.validation.message;
   if (!comparison.validation.valid) {
-    table.innerHTML = '';
+    table.replaceChildren();
     explanationOutput.textContent = 'Comparison unavailable until the selection is valid.';
     return;
   }
-  renderTable(comparison);
-  renderExplanation(comparison.explanation);
-}
-
-function renderTable(comparison) {
-  table.replaceChildren(row(['Field', comparison.left.ticker, comparison.right.ticker], true), ...comparison.rows.map((item) => row([item.label, item.left, item.right])));
+  table.replaceChildren(
+    row(['Field', comparison.leftTicker, comparison.rightTicker], true),
+    ...comparison.rows.map((item) => row([item.label, item.left, item.right])),
+  );
+  const list = document.createElement('ul');
+  comparison.explanation.forEach((message) => {
+    const item = document.createElement('li');
+    item.textContent = message;
+    list.append(item);
+  });
+  explanationOutput.replaceChildren(list);
 }
 
 function row(values, header = false) {
@@ -66,22 +70,8 @@ function row(values, header = false) {
   return wrapper;
 }
 
-function renderExplanation(messages) {
-  const list = document.createElement('ul');
-  messages.forEach((message) => {
-    const item = document.createElement('li');
-    item.textContent = message;
-    list.append(item);
-  });
-  explanationOutput.replaceChildren(list);
-}
-
-function renderSources(etfs) {
-  const uniqueSources = new Map();
-  etfs.forEach((etf) => {
-    etf.sources.forEach((source) => uniqueSources.set(source.url, source));
-  });
-  sourceList.replaceChildren(...Array.from(uniqueSources.values()).map((source) => {
+function renderMetadata() {
+  sourceList.replaceChildren(...state.data.sources.map((source) => {
     const item = document.createElement('li');
     const link = document.createElement('a');
     link.href = source.url;
@@ -90,7 +80,6 @@ function renderSources(etfs) {
     item.append(link, ` — ${source.publisher}`);
     return item;
   }));
-  const asOf = fixtureAsOfRange(etfs);
-  fixtureAsOf.textContent = `Fixture field-date range: ${asOf}. Field-level dates: ${fieldDateSummary(etfs)}.`;
-  disclaimerText.textContent = `For informational/educational purposes only. This is not investment advice and not a recommendation or offer to buy or sell any security. Data may be delayed or inaccurate; verify figures with the fund issuer. Fixture fields use the per-field as-of dates shown in the comparison rows and metadata, not one common date.`;
+  fixtureAsOf.textContent = state.data.fixtureMetadata;
+  disclaimerText.textContent = state.data.disclaimer;
 }

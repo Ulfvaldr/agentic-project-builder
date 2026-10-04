@@ -21,15 +21,43 @@ from agentic_project_builder.models import Performance, Sector
 
 
 class FormattingTests(unittest.TestCase):
-    def test_formatters_match_javascript_display_strings_and_rounding_edges(self) -> None:
-        self.assertEqual(format_percent(-0.0), "0.00%")
-        self.assertEqual(format_percent(0.03), "0.0300%")
-        self.assertEqual(format_percent(0.1), "0.10%")
-        self.assertEqual(format_percent(-0.001), "-0.0010%")
-        self.assertEqual(format_percent(-0.00001), "-0.0000%")
-        self.assertEqual(format_currency_billions(806.18442), "$806.18B")
-        self.assertEqual(format_currency_billions(690.1), "$690.1B")
-        self.assertEqual(format_integer(3507), "3,507")
+    def test_historical_formatter_vectors_are_stable_python_goldens(self) -> None:
+        vectors = (
+            (0, "0.00%", "$0B", "0"),
+            (-0.0, "0.00%", "$-0B", "-0"),
+            (0.03, "0.0300%", "$0.03B", "0.03"),
+            (0.1, "0.10%", "$0.1B", "0.1"),
+            (-0.001, "-0.0010%", "$-0B", "-0.001"),
+            (-0.00001, "-0.0000%", "$-0B", "-0"),
+            (1.005, "1.00%", "$1.01B", "1.005"),
+            (2.675, "2.67%", "$2.68B", "2.675"),
+            (690.1, "690.10%", "$690.1B", "690.1"),
+            (806.18442, "806.18%", "$806.18B", "806.184"),
+            (3507, "3507.00%", "$3,507B", "3,507"),
+            (1.5, "1.50%", "$1.5B", "1.5"),
+            (1e21, "1e+21%", "$1,000,000,000,000,000,000,000B", "1,000,000,000,000,000,000,000"),
+            (-1e21, "-1e+21%", "$-1,000,000,000,000,000,000,000B", "-1,000,000,000,000,000,000,000"),
+            (
+                1.2345678901234568e21,
+                "1.2345678901234568e+21%",
+                "$1,234,567,890,123,456,800,000B",
+                "1,234,567,890,123,456,800,000",
+            ),
+            (
+                -9.876543210987655e22,
+                "-9.876543210987655e+22%",
+                "$-98,765,432,109,876,550,000,000B",
+                "-98,765,432,109,876,550,000,000",
+            ),
+        )
+
+        for value, percent, currency, integer in vectors:
+            with self.subTest(value=value):
+                self.assertEqual(format_percent(value), percent)
+                self.assertEqual(format_currency_billions(value), currency)
+                self.assertEqual(format_integer(value), integer)
+
+    def test_composite_formatters_preserve_display_contract(self) -> None:
         self.assertEqual(
             format_top_sectors((Sector("Technology", 40.9), Sector("Industrials", 11.8))),
             "Technology 40.90%; Industrials 11.80%",
@@ -45,7 +73,7 @@ class ComparisonTests(unittest.TestCase):
     def setUpClass(cls) -> None:
         cls.etfs = load_etf_fixtures()
 
-    def test_selection_and_comparison_rows_match_javascript_contract(self) -> None:
+    def test_selection_and_comparison_rows_match_browser_data_contract(self) -> None:
         self.assertEqual(validate_selection("SPY", "QQQ", self.etfs).as_dict(), {"valid": True, "message": ""})
         self.assertEqual(
             validate_selection("SPY", "SPY", self.etfs).message,
@@ -73,7 +101,7 @@ class ComparisonTests(unittest.TestCase):
         self.assertEqual(invalid.explanation, ())
         self.assertIsNone(invalid.left)
 
-    def test_explanations_and_known_threshold_edges_match_javascript(self) -> None:
+    def test_explanations_and_known_threshold_edges(self) -> None:
         spy, qqq, _ = self.etfs
         self.assertEqual(
             explain_differences(spy, qqq),

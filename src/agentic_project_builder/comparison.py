@@ -8,7 +8,7 @@ from typing import Any, Callable, Mapping, Sequence
 from .models import Etf, Performance, Sector
 
 
-def _js_number_text(value: float) -> str | None:
+def _special_number_text(value: float) -> str | None:
     numeric = float(value)
     if math.isnan(numeric):
         return "NaN"
@@ -17,9 +17,9 @@ def _js_number_text(value: float) -> str | None:
     return None
 
 
-def _to_fixed(value: float, digits: int) -> str:
+def _fixed_decimal(value: float, digits: int) -> str:
     numeric = float(value)
-    special = _js_number_text(numeric)
+    special = _special_number_text(numeric)
     if special is not None:
         return "Infinity" if special == "∞" else "-Infinity" if special == "-∞" else special
     if abs(numeric) >= 1e21:
@@ -35,12 +35,12 @@ def _to_fixed(value: float, digits: int) -> str:
 def format_percent(value: float) -> str:
     numeric = float(value)
     digits = 4 if 0 < abs(numeric) < 0.1 else 2
-    return f"{_to_fixed(numeric, digits)}%"
+    return f"{_fixed_decimal(numeric, digits)}%"
 
 
 def format_currency_billions(value: float) -> str:
     numeric = float(value)
-    special = _js_number_text(numeric)
+    special = _special_number_text(numeric)
     if special is not None:
         return f"${special}B"
     rounded = Decimal(str(numeric)).quantize(Decimal("0.01"), rounding=ROUND_HALF_UP)
@@ -50,7 +50,7 @@ def format_currency_billions(value: float) -> str:
 
 def format_integer(value: int | float) -> str:
     numeric = float(value)
-    special = _js_number_text(numeric)
+    special = _special_number_text(numeric)
     if special is not None:
         return special
     rounded = Decimal(str(numeric)).quantize(Decimal("0.001"), rounding=ROUND_HALF_UP)
@@ -158,13 +158,13 @@ def build_comparison(left_ticker: str, right_ticker: str, etfs: Sequence[Etf]) -
     return ComparisonResult(validation, left, right, rows, explain_differences(left, right))
 
 
-def _number_after_to_fixed(value: float, digits: int) -> float:
-    return float(_to_fixed(value, digits))
+def _number_after_fixed_decimal(value: float, digits: int) -> float:
+    return float(_fixed_decimal(value, digits))
 
 
 def explain_differences(left: Etf, right: Etf) -> tuple[str, ...]:
     messages: list[str] = []
-    er_diff = _number_after_to_fixed(left.expense_ratio - right.expense_ratio, 4)
+    er_diff = _number_after_fixed_decimal(left.expense_ratio - right.expense_ratio, 4)
     if er_diff == 0:
         messages.append(f"{left.ticker} and {right.ticker} have the same net expense ratio in this fixture.")
     else:
@@ -199,7 +199,7 @@ def explain_differences(left: Etf, right: Etf) -> tuple[str, ...]:
             f"{right.ticker}'s is {right.top_sectors[0].name}."
         )
 
-    ytd_diff = _number_after_to_fixed(left.performance.ytd_return - right.performance.ytd_return, 2)
+    ytd_diff = _number_after_fixed_decimal(left.performance.ytd_return - right.performance.ytd_return, 2)
     if ytd_diff != 0:
         leader = left if ytd_diff > 0 else right
         lagger = right if leader is left else left

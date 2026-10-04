@@ -1,9 +1,6 @@
 from __future__ import annotations
 
 from copy import deepcopy
-import json
-from pathlib import Path
-import subprocess
 import unittest
 
 from agentic_project_builder.fixtures import load_raw_fixtures
@@ -14,69 +11,55 @@ class FixtureValidationTests(unittest.TestCase):
     def setUp(self) -> None:
         self.fixtures = load_raw_fixtures()
 
-    def javascript_schema_errors(self, value: object) -> list[str] | dict[str, str]:
-        javascript = """
-const etfs = JSON.parse(process.argv[1]);
-const requiredStringFields = ['ticker', 'name', 'issuer', 'inceptionDate', 'benchmark', 'asOfDate'];
-const requiredFieldDates = ['expenseRatio', 'aum', 'inceptionDate', 'benchmark', 'holdingsCount', 'topSectors', 'topHoldings', 'performance'];
-try {
-  const errors = [];
-  if (!Array.isArray(etfs) || etfs.length < 2) errors.push('Fixture must contain at least two ETF records.');
-  const tickers = new Set();
-  for (const [index, etf] of etfs.entries()) {
-    for (const field of requiredStringFields) {
-      if (typeof etf[field] !== 'string' || etf[field].length === 0) errors.push(`ETF ${index} missing ${field}.`);
-    }
-    if (tickers.has(etf.ticker)) errors.push(`Duplicate ticker ${etf.ticker}.`);
-    tickers.add(etf.ticker);
-    if (typeof etf.expenseRatio !== 'number') errors.push(`${etf.ticker} expenseRatio must be a number.`);
-    if (typeof etf.aum !== 'number') errors.push(`${etf.ticker} aum must be a number in billions.`);
-    if (!Number.isInteger(etf.holdingsCount)) errors.push(`${etf.ticker} holdingsCount must be an integer.`);
-    if (!Array.isArray(etf.topSectors) || etf.topSectors.length < 1) errors.push(`${etf.ticker} must list top sectors.`);
-    if (!Array.isArray(etf.topHoldings) || etf.topHoldings.length < 1) errors.push(`${etf.ticker} must list top holdings for traceability.`);
-    if (!etf.performance || typeof etf.performance.ytdReturn !== 'number' || typeof etf.performance.oneYearReturn !== 'number' || !etf.performance.asOfDate) errors.push(`${etf.ticker} missing performance snapshot.`);
-    if (!etf.fieldAsOfDates || requiredFieldDates.some((field) => typeof etf.fieldAsOfDates[field] !== 'string' || !/^\\d{4}-\\d{2}-\\d{2}$/.test(etf.fieldAsOfDates[field]))) errors.push(`${etf.ticker} must include ISO fieldAsOfDates for ${requiredFieldDates.join(', ')}.`);
-    if (!Array.isArray(etf.sources) || etf.sources.length < 1 || etf.sources.some((source) => !source.url || !source.publisher || !source.label)) errors.push(`${etf.ticker} must include source links.`);
-  }
-  process.stdout.write(JSON.stringify(errors));
-} catch (error) {
-  process.stdout.write(JSON.stringify({ name: error.constructor.name, message: error.message }));
-}
-"""
-        result = subprocess.run(
-            ["node", "-e", javascript, json.dumps(value)],
-            capture_output=True,
-            text=True,
-            check=True,
+    def test_malformed_roots_raise_exact_historical_errors(self) -> None:
+        vectors = (
+            (None, "Cannot read properties of null (reading 'entries')"),
+            (42, "etfs.entries is not a function or its return value is not iterable"),
+            ("boxed", "etfs.entries is not a function or its return value is not iterable"),
+            (True, "etfs.entries is not a function or its return value is not iterable"),
+            ({}, "etfs.entries is not a function or its return value is not iterable"),
         )
-        return json.loads(result.stdout)
 
-    def assert_javascript_and_python_raise_type_error(self, value: object) -> None:
-        javascript_error = self.javascript_schema_errors(value)
-        self.assertEqual(javascript_error["name"], "TypeError")
-        with self.assertRaises(TypeError) as raised:
-            validate_fixtures(value)
-        self.assertEqual(str(raised.exception), javascript_error["message"])
-
-    def test_malformed_roots_match_javascript(self) -> None:
-        for value in (None, 42, "boxed", True, {}):
+        for value, message in vectors:
             with self.subTest(value=value):
-                self.assert_javascript_and_python_raise_type_error(value)
-        self.assertEqual(validate_fixtures([]), self.javascript_schema_errors([]))
+                with self.assertRaises(TypeError) as raised:
+                    validate_fixtures(value)
+                self.assertEqual(str(raised.exception), message)
 
-    def test_null_record_throws_like_javascript(self) -> None:
-        self.assert_javascript_and_python_raise_type_error([None, {}])
+    def test_null_record_raises_exact_historical_error(self) -> None:
+        with self.assertRaises(TypeError) as raised:
+            validate_fixtures([None, {}])
+        self.assertEqual(str(raised.exception), "Cannot read properties of null (reading 'ticker')")
 
-    def test_json_primitive_and_array_records_box_like_javascript(self) -> None:
+    def test_empty_fixture_reports_exact_historical_error_list(self) -> None:
+        self.assertEqual(validate_fixtures([]), ["Fixture must contain at least two ETF records."])
+
+    def test_primitive_records_report_exact_historical_errors_in_order(self) -> None:
+        expected = [
+            "ETF 0 missing ticker.",
+            "ETF 0 missing name.",
+            "ETF 0 missing issuer.",
+            "ETF 0 missing inceptionDate.",
+            "ETF 0 missing benchmark.",
+            "ETF 0 missing asOfDate.",
+            "undefined expenseRatio must be a number.",
+            "undefined aum must be a number in billions.",
+            "undefined holdingsCount must be an integer.",
+            "undefined must list top sectors.",
+            "undefined must list top holdings for traceability.",
+            "undefined missing performance snapshot.",
+            "undefined must include ISO fieldAsOfDates for expenseRatio, aum, inceptionDate, benchmark, holdingsCount, topSectors, topHoldings, performance.",
+            "undefined must include source links.",
+        ]
+
         for record in (42, "boxed", True, []):
             with self.subTest(record=record):
-                value = [record, self.fixtures[0]]
-                self.assertEqual(validate_fixtures(value), self.javascript_schema_errors(value))
+                self.assertEqual(validate_fixtures([record, self.fixtures[0]]), expected)
 
     def test_committed_fixtures_pass_schema_and_official_spot_checks(self) -> None:
         self.assertEqual(validate_fixtures(self.fixtures), [])
 
-    def test_reports_all_schema_errors_in_javascript_order(self) -> None:
+    def test_reports_all_schema_errors_in_stable_order(self) -> None:
         broken = [{
             "ticker": "BAD", "name": "", "issuer": "Issuer", "inceptionDate": "2020-01-01",
             "benchmark": "Index", "asOfDate": "2024-01-01", "expenseRatio": "0.1", "aum": None,
@@ -116,7 +99,11 @@ try {
         self.assertIn("SPY aum as-of date expected 2026-09-22, got 2000-01-01.", errors)
         self.assertIn("SPY top sector 1 expected Information Technology 39.28%, got Wrong 1%.", errors)
         self.assertIn("SPY performance ytdReturn expected 13.05, got 1.", errors)
-        self.assertIn("SPY missing required official source URL containing ssga.com/us/en/intermediary/etfs/state-street-spdr-sp-500-etf-trust-spy.", errors)
+        self.assertIn(
+            "SPY missing required official source URL containing "
+            "ssga.com/us/en/intermediary/etfs/state-street-spdr-sp-500-etf-trust-spy.",
+            errors,
+        )
         self.assertGreaterEqual(len(errors), 7)
 
 

@@ -1,6 +1,6 @@
 # ETF fixture schema
 
-The browser app loads `fixtures/etfs.json` through the narrow `src/dataProvider.js` seam. Later work can replace that provider with a refresh script or service without changing the comparison or rendering logic.
+Python loads and validates `fixtures/etfs.json` (with an identical packaged copy at `src/agentic_project_builder/site/fixtures/etfs.json`). Python then generates `browser-data.json`, which is the browser's static, preformatted input. The browser performs no domain comparison or formatting.
 
 Each ETF record must include:
 
@@ -17,18 +17,16 @@ Each ETF record must include:
 - `fieldAsOfDates`: ISO date map for `expenseRatio`, `aum`, `inceptionDate`, `benchmark`, `holdingsCount`, `topSectors`, `topHoldings`, and `performance`
 - `sources`: one or more `{ label, publisher, url }` entries
 
-Validation command:
-
-    npm run validate:fixtures
-
-Parallel Python validation command (the JavaScript validator remains during parity review):
+Validation and generation commands:
 
     PYTHONPATH=src python -m agentic_project_builder validate-fixtures
+    PYTHONPATH=src python -m agentic_project_builder build-browser-data
 
-Refresh seam:
+Refresh procedure:
 
 1. A human retrieves current issuer pages/fact sheets and, optionally, SEC EDGAR N-PORT holdings as a cross-check.
-2. The human updates only `fixtures/etfs.json`, preserving the schema above.
-3. Run `npm run validate:fixtures`, `npm test`, and the browser console check before committing.
+2. Update both committed fixture copies, preserving the schema above.
+3. Validate fixtures and regenerate both browser-data copies with the commands above.
+4. Run the full Python suite and live browser smoke test documented in the README.
 
-The app intentionally performs no live network calls beyond loading its local committed JSON fixture.
+The app performs no live network calls beyond loading its local committed static JSON.

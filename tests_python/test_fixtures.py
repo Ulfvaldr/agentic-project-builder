@@ -27,9 +27,8 @@ class FixtureLoaderTests(unittest.TestCase):
     def test_packaged_site_is_an_exact_copy_of_repository_assets(self) -> None:
         relative_paths = (
             Path("index.html"),
+            Path("browser-data.json"),
             Path("fixtures/etfs.json"),
-            Path("src/comparison.js"),
-            Path("src/dataProvider.js"),
             Path("src/main.js"),
             Path("src/styles.css"),
         )
@@ -41,6 +40,13 @@ class FixtureLoaderTests(unittest.TestCase):
                     (packaged_root / relative_path).read_bytes(),
                     (ROOT / relative_path).read_bytes(),
                 )
+
+    def test_committed_browser_data_matches_python_domain_output(self) -> None:
+        from agentic_project_builder.browser_data import build_browser_data
+
+        expected = build_browser_data(load_etf_fixtures())
+        actual = json.loads((ROOT / "browser-data.json").read_text(encoding="utf-8"))
+        self.assertEqual(actual, expected)
 
     def test_loader_accepts_injected_reader_and_path(self) -> None:
         calls: list[tuple[Path, str]] = []

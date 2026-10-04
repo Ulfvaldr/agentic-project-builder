@@ -8,6 +8,7 @@ from pathlib import Path
 import sys
 
 from .comparison import build_comparison
+from .browser_data import default_browser_data_paths, write_browser_data
 from .fixtures import default_fixture_path, default_static_root, load_etf_fixtures, load_raw_fixtures
 from .server import serve
 from .validation import validate_fixtures
@@ -34,6 +35,12 @@ def build_parser() -> argparse.ArgumentParser:
     compare.add_argument("left_ticker")
     compare.add_argument("right_ticker")
     compare.add_argument("--fixture", type=Path, default=default_fixture_path())
+
+    browser_data = subparsers.add_parser(
+        "build-browser-data", help="generate static browser data with Python"
+    )
+    browser_data.add_argument("--fixture", type=Path, default=default_fixture_path())
+    browser_data.add_argument("--output", type=Path, action="append")
     return parser
 
 
@@ -59,6 +66,13 @@ def main(argv: Sequence[str] | None = None) -> int:
         return _validate_command(args.fixture)
     if args.command == "compare":
         return _compare_command(args.left_ticker, args.right_ticker, args.fixture)
+    if args.command == "build-browser-data":
+        etfs = load_etf_fixtures(args.fixture)
+        outputs = tuple(args.output) if args.output else default_browser_data_paths()
+        for output in outputs:
+            write_browser_data(output, etfs)
+            print(f"Wrote Python-generated browser data to {output}")
+        return 0
     if args.command == "serve":
         port = args.port if args.port is not None else int(os.environ.get("PORT", "4173"))
         serve(args.root, host=args.host, port=port)

@@ -12,11 +12,12 @@ from agentic_project_builder.browser_check import (
     _valid_websocket_handshake,
     browser_check_from_environment,
     failure_for_event,
+    page_state_failures,
 )
 
 
 class BrowserCheckTests(unittest.TestCase):
-    def test_default_environment_configuration_matches_node_checker(self) -> None:
+    def test_default_environment_configuration(self) -> None:
         with patch.dict(os.environ, {}, clear=True):
             config = BrowserConfig.from_environment()
         self.assertEqual(config.url, "http://127.0.0.1:4173/")
@@ -75,6 +76,21 @@ class BrowserCheckTests(unittest.TestCase):
         )
         self.assertIsNone(failure_for_event({"method": "Log.entryAdded", "params": {"entry": {"level": "info"}}}))
         self.assertIsNone(failure_for_event({"method": "Network.responseReceived", "params": {"response": {"status": 399}}}))
+
+    def test_page_state_failures_require_rendered_interactive_comparison(self) -> None:
+        healthy = {
+            "fundCount": 3,
+            "rowCount": 9,
+            "explanationCount": 6,
+            "sourceCount": 6,
+            "validation": "",
+            "heading": "FieldSPYQQQ",
+        }
+        self.assertEqual(page_state_failures(healthy), [])
+        self.assertEqual(
+            page_state_failures({**healthy, "rowCount": 0, "validation": "broken"}),
+            ["Expected 9 rendered comparison rows, got 0", "Unexpected validation message: broken"],
+        )
 
 
 if __name__ == "__main__":

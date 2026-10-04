@@ -67,6 +67,18 @@ def failure_for_event(event: dict[str, Any]) -> str | None:
     return None
 
 
+def page_state_failures(state: dict[str, Any]) -> list[str]:
+    checks = (
+        (state.get("fundCount") == 3, f"Expected 3 ETF options, got {state.get('fundCount')}"),
+        (state.get("rowCount") == 9, f"Expected 9 rendered comparison rows, got {state.get('rowCount')}"),
+        (state.get("explanationCount", 0) > 0, "Expected rendered explanation items"),
+        (state.get("sourceCount", 0) > 0, "Expected rendered source links"),
+        (state.get("validation") == "", f"Unexpected validation message: {state.get('validation')}"),
+        (state.get("heading") == "FieldSPYQQQ", f"Unexpected comparison heading: {state.get('heading')}"),
+    )
+    return [message for valid, message in checks if not valid]
+
+
 def _request_json(method: str, path: str, port: int, timeout: float = 1.0) -> dict[str, Any]:
     request = Request(f"http://127.0.0.1:{port}{path}", method=method)
     with urlopen(request, timeout=timeout) as response:
@@ -288,6 +300,67 @@ def _navigate_and_wait(cdp: CdpClient, url: str) -> None:
     cdp.wait("Page.loadEventFired", waiter)
 
 
+_PAGE_STATE_EXPRESSION = """(() => ({
+  fundCount: document.querySelectorAll('#left-etf option').length,
+  rowCount: document.querySelectorAll('#comparison-table [role=row]').length,
+  explanationCount: document.querySelectorAll('#explanation-output li').length,
+  sourceCount: document.querySelectorAll('#source-list a').length,
+  validation: document.querySelector('#validation-message')?.textContent ?? null,
+  heading: document.querySelector('#comparison-table [role=row]')?.textContent ?? null
+}))()"""
+
+
+def _evaluate(cdp: CdpClient, expression: str) -> Any:
+    response = cdp.send("Runtime.evaluate", {"expression": expression, "returnByValue": True})
+    if response.get("exceptionDetails"):
+        raise RuntimeError(f"Browser evaluation failed: {response['exceptionDetails'].get('text', 'exception')}")
+    return response.get("result", {}).get("value")
+
+
+def _wait_for_page_state(cdp: CdpClient, timeout: float = 5.0) -> dict[str, Any]:
+    deadline = time.monotonic() + timeout
+    state: dict[str, Any] = {}
+    while time.monotonic() < deadline:
+        value = _evaluate(cdp, _PAGE_STATE_EXPRESSION)
+        state = value if isinstance(value, dict) else {}
+        if state.get("fundCount"):
+            return state
+        time.sleep(0.05)
+    raise RuntimeError(f"Browser UI did not initialize: {state}")
+
+
+def _exercise_page(cdp: CdpClient) -> list[str]:
+    failures = page_state_failures(_wait_for_page_state(cdp))
+    invalid = _evaluate(cdp, """(() => {
+      const left = document.querySelector('#left-etf');
+      left.value = document.querySelector('#right-etf').value;
+      left.dispatchEvent(new Event('change'));
+      return {
+        validation: document.querySelector('#validation-message').textContent,
+        rowCount: document.querySelectorAll('#comparison-table [role=row]').length,
+        explanation: document.querySelector('#explanation-output').textContent
+      };
+    })()""")
+    if invalid != {
+        "validation": "Choose two distinct ETFs before comparing.",
+        "rowCount": 0,
+        "explanation": "Comparison unavailable until the selection is valid.",
+    }:
+        failures.append(f"Invalid-selection behavior mismatch: {invalid}")
+    alternate = _evaluate(cdp, """(() => {
+      const left = document.querySelector('#left-etf');
+      left.value = 'VTI';
+      left.dispatchEvent(new Event('change'));
+      return {
+        rowCount: document.querySelectorAll('#comparison-table [role=row]').length,
+        heading: document.querySelector('#comparison-table [role=row]')?.textContent
+      };
+    })()""")
+    if alternate != {"rowCount": 9, "heading": "FieldVTIQQQ"}:
+        failures.append(f"Alternate-comparison behavior mismatch: {alternate}")
+    return failures
+
+
 def _remove_tree(path: Path) -> None:
     for attempt in range(6):
         try:
@@ -328,9 +401,9 @@ def run_browser_check(config: BrowserConfig) -> list[str]:
         for domain in ("Log", "Runtime", "Page", "Network"):
             cdp.send(f"{domain}.enable")
         _navigate_and_wait(cdp, config.url)
-        time.sleep(0.5)
+        failures.extend(_exercise_page(cdp))
         _navigate_and_wait(cdp, config.url)
-        time.sleep(0.5)
+        failures.extend(page_state_failures(_wait_for_page_state(cdp)))
         return failures
     finally:
         if cdp is not None:
@@ -357,5 +430,8 @@ def browser_check_from_environment(
     if failures:
         print("\n".join(failures), file=sys.stderr)
         return 1
-    print(f"Clean browser console/log check passed for initial load and reload: {config.url}")
+    print(
+        "Live browser smoke passed for initial render, invalid selection, alternate comparison, "
+        f"reload, and clean console/network logs: {config.url}"
+    )
     return 0

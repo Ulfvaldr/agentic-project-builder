@@ -17,7 +17,7 @@ MIME_TYPES = {
 }
 _PERCENT_ESCAPE = re.compile(r"%(?![0-9A-Fa-f]{2})")
 ServerAddress: TypeAlias = tuple[str, int]
-NODE_HTTP_METHODS = frozenset({
+KNOWN_HTTP_METHODS = frozenset({
     "ACL", "BIND", "CHECKOUT", "CONNECT", "COPY", "DELETE", "GET", "HEAD", "LINK", "LOCK",
     "M-SEARCH", "MERGE", "MKACTIVITY", "MKCALENDAR", "MKCOL", "MOVE", "NOTIFY", "OPTIONS",
     "PATCH", "POST", "PROPFIND", "PROPPATCH", "PURGE", "PUT", "QUERY", "REBIND", "REPORT",
@@ -38,14 +38,14 @@ class StaticRequestHandler(BaseHTTPRequestHandler):
     server: StaticServer
 
     def __getattr__(self, name: str):
-        if name.startswith("do_") and name[3:] in NODE_HTTP_METHODS:
+        if name.startswith("do_") and name[3:] in KNOWN_HTTP_METHODS:
             return self._serve
         raise AttributeError(name)
 
     def parse_request(self) -> bool:
         if not super().parse_request():
             return False
-        if self.command not in NODE_HTTP_METHODS:
+        if self.command not in KNOWN_HTTP_METHODS:
             self.send_error(HTTPStatus.BAD_REQUEST)
             return False
         return True

@@ -1,0 +1,430 @@
+{
+  "funds": [
+    {
+      "ticker": "SPY",
+      "name": "State Street SPDR S&P 500 ETF Trust"
+    },
+    {
+      "ticker": "QQQ",
+      "name": "Invesco QQQ Trust"
+    },
+    {
+      "ticker": "VTI",
+      "name": "Vanguard Total Stock Market ETF"
+    }
+  ],
+  "comparisons": {
+    "SPY:SPY": {
+      "validation": {
+        "valid": false,
+        "message": "Choose two distinct ETFs before comparing."
+      },
+      "leftTicker": null,
+      "rightTicker": null,
+      "rows": [],
+      "explanation": []
+    },
+    "SPY:QQQ": {
+      "validation": {
+        "valid": true,
+        "message": ""
+      },
+      "leftTicker": "SPY",
+      "rightTicker": "QQQ",
+      "rows": [
+        {
+          "label": "Issuer",
+          "left": "State Street Global Advisors",
+          "right": "Invesco"
+        },
+        {
+          "label": "Net expense ratio",
+          "left": "0.0945% (as of 2026-09-23)",
+          "right": "0.18% (as of 2026-09-21)"
+        },
+        {
+          "label": "Assets under management",
+          "left": "$806.18B (as of 2026-09-22)",
+          "right": "$498.64B (as of 2026-09-21)"
+        },
+        {
+          "label": "Inception date",
+          "left": "1993-01-22 (as of 2026-09-23)",
+          "right": "1999-03-09 (as of 2026-09-21)"
+        },
+        {
+          "label": "Benchmark / category",
+          "left": "S&P 500 Index / U.S. large blend equities (as of 2026-09-23)",
+          "right": "Nasdaq-100 Index / U.S. large growth equities (as of 2026-09-21)"
+        },
+        {
+          "label": "Holdings count",
+          "left": "504 (as of 2026-09-22)",
+          "right": "102 (as of 2026-09-21)"
+        },
+        {
+          "label": "Largest sector exposures",
+          "left": "Information Technology 39.28%; Financials 11.53%; Communication Services 10.00% (as of 2026-09-22)",
+          "right": "Technology 66.36%; Consumer Discretionary 16.65%; Telecommunications 4.72% (as of 2026-08-30)"
+        },
+        {
+          "label": "Performance snapshot",
+          "left": "YTD 13.05%; 1-year 20.17% (as of 2026-08-31)",
+          "right": "YTD 12.15%; 1-year 26.27% (as of 2026-08-30)"
+        }
+      ],
+      "explanation": [
+        "SPY has the lower net expense ratio (0.0945% vs. 0.18%).",
+        "SPY has the larger asset base ($806.18B vs. $498.64B).",
+        "SPY tracks S&P 500 Index / U.S. large blend equities; QQQ tracks Nasdaq-100 Index / U.S. large growth equities.",
+        "SPY is broader by holdings count (504 vs. 102).",
+        "SPY's largest sector exposure is Information Technology; QQQ's is Technology.",
+        "SPY has the higher YTD return in the fixture snapshot (13.05% vs. 12.15%)."
+      ]
+    },
+    "SPY:VTI": {
+      "validation": {
+        "valid": true,
+        "message": ""
+      },
+      "leftTicker": "SPY",
+      "rightTicker": "VTI",
+      "rows": [
+        {
+          "label": "Issuer",
+          "left": "State Street Global Advisors",
+          "right": "Vanguard"
+        },
+        {
+          "label": "Net expense ratio",
+          "left": "0.0945% (as of 2026-09-23)",
+          "right": "0.0300% (as of 2026-04-28)"
+        },
+        {
+          "label": "Assets under management",
+          "left": "$806.18B (as of 2026-09-22)",
+          "right": "$690.1B (as of 2026-08-31)"
+        },
+        {
+          "label": "Inception date",
+          "left": "1993-01-22 (as of 2026-09-23)",
+          "right": "2001-05-24 (as of 2026-08-31)"
+        },
+        {
+          "label": "Benchmark / category",
+          "left": "S&P 500 Index / U.S. large blend equities (as of 2026-09-23)",
+          "right": "Morningstar US Total Market Index / broad U.S. equities (as of 2026-08-31)"
+        },
+        {
+          "label": "Holdings count",
+          "left": "504 (as of 2026-09-22)",
+          "right": "3,507 (as of 2026-08-31)"
+        },
+        {
+          "label": "Largest sector exposures",
+          "left": "Information Technology 39.28%; Financials 11.53%; Communication Services 10.00% (as of 2026-09-22)",
+          "right": "Technology 40.90%; Consumer Discretionary 12.00%; Industrials 11.80% (as of 2026-08-31)"
+        },
+        {
+          "label": "Performance snapshot",
+          "left": "YTD 13.05%; 1-year 20.17% (as of 2026-08-31)",
+          "right": "YTD 13.45%; 1-year 20.24% (as of 2026-08-31)"
+        }
+      ],
+      "explanation": [
+        "VTI has the lower net expense ratio (0.0300% vs. 0.0945%).",
+        "SPY has the larger asset base ($806.18B vs. $690.1B).",
+        "SPY tracks S&P 500 Index / U.S. large blend equities; VTI tracks Morningstar US Total Market Index / broad U.S. equities.",
+        "VTI is broader by holdings count (3,507 vs. 504).",
+        "SPY's largest sector exposure is Information Technology; VTI's is Technology.",
+        "VTI has the higher YTD return in the fixture snapshot (13.45% vs. 13.05%)."
+      ]
+    },
+    "QQQ:SPY": {
+      "validation": {
+        "valid": true,
+        "message": ""
+      },
+      "leftTicker": "QQQ",
+      "rightTicker": "SPY",
+      "rows": [
+        {
+          "label": "Issuer",
+          "left": "Invesco",
+          "right": "State Street Global Advisors"
+        },
+        {
+          "label": "Net expense ratio",
+          "left": "0.18% (as of 2026-09-21)",
+          "right": "0.0945% (as of 2026-09-23)"
+        },
+        {
+          "label": "Assets under management",
+          "left": "$498.64B (as of 2026-09-21)",
+          "right": "$806.18B (as of 2026-09-22)"
+        },
+        {
+          "label": "Inception date",
+          "left": "1999-03-09 (as of 2026-09-21)",
+          "right": "1993-01-22 (as of 2026-09-23)"
+        },
+        {
+          "label": "Benchmark / category",
+          "left": "Nasdaq-100 Index / U.S. large growth equities (as of 2026-09-21)",
+          "right": "S&P 500 Index / U.S. large blend equities (as of 2026-09-23)"
+        },
+        {
+          "label": "Holdings count",
+          "left": "102 (as of 2026-09-21)",
+          "right": "504 (as of 2026-09-22)"
+        },
+        {
+          "label": "Largest sector exposures",
+          "left": "Technology 66.36%; Consumer Discretionary 16.65%; Telecommunications 4.72% (as of 2026-08-30)",
+          "right": "Information Technology 39.28%; Financials 11.53%; Communication Services 10.00% (as of 2026-09-22)"
+        },
+        {
+          "label": "Performance snapshot",
+          "left": "YTD 12.15%; 1-year 26.27% (as of 2026-08-30)",
+          "right": "YTD 13.05%; 1-year 20.17% (as of 2026-08-31)"
+        }
+      ],
+      "explanation": [
+        "SPY has the lower net expense ratio (0.0945% vs. 0.18%).",
+        "SPY has the larger asset base ($806.18B vs. $498.64B).",
+        "QQQ tracks Nasdaq-100 Index / U.S. large growth equities; SPY tracks S&P 500 Index / U.S. large blend equities.",
+        "SPY is broader by holdings count (504 vs. 102).",
+        "QQQ's largest sector exposure is Technology; SPY's is Information Technology.",
+        "SPY has the higher YTD return in the fixture snapshot (13.05% vs. 12.15%)."
+      ]
+    },
+    "QQQ:QQQ": {
+      "validation": {
+        "valid": false,
+        "message": "Choose two distinct ETFs before comparing."
+      },
+      "leftTicker": null,
+      "rightTicker": null,
+      "rows": [],
+      "explanation": []
+    },
+    "QQQ:VTI": {
+      "validation": {
+        "valid": true,
+        "message": ""
+      },
+      "leftTicker": "QQQ",
+      "rightTicker": "VTI",
+      "rows": [
+        {
+          "label": "Issuer",
+          "left": "Invesco",
+          "right": "Vanguard"
+        },
+        {
+          "label": "Net expense ratio",
+          "left": "0.18% (as of 2026-09-21)",
+          "right": "0.0300% (as of 2026-04-28)"
+        },
+        {
+          "label": "Assets under management",
+          "left": "$498.64B (as of 2026-09-21)",
+          "right": "$690.1B (as of 2026-08-31)"
+        },
+        {
+          "label": "Inception date",
+          "left": "1999-03-09 (as of 2026-09-21)",
+          "right": "2001-05-24 (as of 2026-08-31)"
+        },
+        {
+          "label": "Benchmark / category",
+          "left": "Nasdaq-100 Index / U.S. large growth equities (as of 2026-09-21)",
+          "right": "Morningstar US Total Market Index / broad U.S. equities (as of 2026-08-31)"
+        },
+        {
+          "label": "Holdings count",
+          "left": "102 (as of 2026-09-21)",
+          "right": "3,507 (as of 2026-08-31)"
+        },
+        {
+          "label": "Largest sector exposures",
+          "left": "Technology 66.36%; Consumer Discretionary 16.65%; Telecommunications 4.72% (as of 2026-08-30)",
+          "right": "Technology 40.90%; Consumer Discretionary 12.00%; Industrials 11.80% (as of 2026-08-31)"
+        },
+        {
+          "label": "Performance snapshot",
+          "left": "YTD 12.15%; 1-year 26.27% (as of 2026-08-30)",
+          "right": "YTD 13.45%; 1-year 20.24% (as of 2026-08-31)"
+        }
+      ],
+      "explanation": [
+        "VTI has the lower net expense ratio (0.0300% vs. 0.18%).",
+        "VTI has the larger asset base ($690.1B vs. $498.64B).",
+        "QQQ tracks Nasdaq-100 Index / U.S. large growth equities; VTI tracks Morningstar US Total Market Index / broad U.S. equities.",
+        "VTI is broader by holdings count (3,507 vs. 102).",
+        "QQQ's largest sector exposure is Technology; VTI's is Technology.",
+        "VTI has the higher YTD return in the fixture snapshot (13.45% vs. 12.15%)."
+      ]
+    },
+    "VTI:SPY": {
+      "validation": {
+        "valid": true,
+        "message": ""
+      },
+      "leftTicker": "VTI",
+      "rightTicker": "SPY",
+      "rows": [
+        {
+          "label": "Issuer",
+          "left": "Vanguard",
+          "right": "State Street Global Advisors"
+        },
+        {
+          "label": "Net expense ratio",
+          "left": "0.0300% (as of 2026-04-28)",
+          "right": "0.0945% (as of 2026-09-23)"
+        },
+        {
+          "label": "Assets under management",
+          "left": "$690.1B (as of 2026-08-31)",
+          "right": "$806.18B (as of 2026-09-22)"
+        },
+        {
+          "label": "Inception date",
+          "left": "2001-05-24 (as of 2026-08-31)",
+          "right": "1993-01-22 (as of 2026-09-23)"
+        },
+        {
+          "label": "Benchmark / category",
+          "left": "Morningstar US Total Market Index / broad U.S. equities (as of 2026-08-31)",
+          "right": "S&P 500 Index / U.S. large blend equities (as of 2026-09-23)"
+        },
+        {
+          "label": "Holdings count",
+          "left": "3,507 (as of 2026-08-31)",
+          "right": "504 (as of 2026-09-22)"
+        },
+        {
+          "label": "Largest sector exposures",
+          "left": "Technology 40.90%; Consumer Discretionary 12.00%; Industrials 11.80% (as of 2026-08-31)",
+          "right": "Information Technology 39.28%; Financials 11.53%; Communication Services 10.00% (as of 2026-09-22)"
+        },
+        {
+          "label": "Performance snapshot",
+          "left": "YTD 13.45%; 1-year 20.24% (as of 2026-08-31)",
+          "right": "YTD 13.05%; 1-year 20.17% (as of 2026-08-31)"
+        }
+      ],
+      "explanation": [
+        "VTI has the lower net expense ratio (0.0300% vs. 0.0945%).",
+        "SPY has the larger asset base ($806.18B vs. $690.1B).",
+        "VTI tracks Morningstar US Total Market Index / broad U.S. equities; SPY tracks S&P 500 Index / U.S. large blend equities.",
+        "VTI is broader by holdings count (3,507 vs. 504).",
+        "VTI's largest sector exposure is Technology; SPY's is Information Technology.",
+        "VTI has the higher YTD return in the fixture snapshot (13.45% vs. 13.05%)."
+      ]
+    },
+    "VTI:QQQ": {
+      "validation": {
+        "valid": true,
+        "message": ""
+      },
+      "leftTicker": "VTI",
+      "rightTicker": "QQQ",
+      "rows": [
+        {
+          "label": "Issuer",
+          "left": "Vanguard",
+          "right": "Invesco"
+        },
+        {
+          "label": "Net expense ratio",
+          "left": "0.0300% (as of 2026-04-28)",
+          "right": "0.18% (as of 2026-09-21)"
+        },
+        {
+          "label": "Assets under management",
+          "left": "$690.1B (as of 2026-08-31)",
+          "right": "$498.64B (as of 2026-09-21)"
+        },
+        {
+          "label": "Inception date",
+          "left": "2001-05-24 (as of 2026-08-31)",
+          "right": "1999-03-09 (as of 2026-09-21)"
+        },
+        {
+          "label": "Benchmark / category",
+          "left": "Morningstar US Total Market Index / broad U.S. equities (as of 2026-08-31)",
+          "right": "Nasdaq-100 Index / U.S. large growth equities (as of 2026-09-21)"
+        },
+        {
+          "label": "Holdings count",
+          "left": "3,507 (as of 2026-08-31)",
+          "right": "102 (as of 2026-09-21)"
+        },
+        {
+          "label": "Largest sector exposures",
+          "left": "Technology 40.90%; Consumer Discretionary 12.00%; Industrials 11.80% (as of 2026-08-31)",
+          "right": "Technology 66.36%; Consumer Discretionary 16.65%; Telecommunications 4.72% (as of 2026-08-30)"
+        },
+        {
+          "label": "Performance snapshot",
+          "left": "YTD 13.45%; 1-year 20.24% (as of 2026-08-31)",
+          "right": "YTD 12.15%; 1-year 26.27% (as of 2026-08-30)"
+        }
+      ],
+      "explanation": [
+        "VTI has the lower net expense ratio (0.0300% vs. 0.18%).",
+        "VTI has the larger asset base ($690.1B vs. $498.64B).",
+        "VTI tracks Morningstar US Total Market Index / broad U.S. equities; QQQ tracks Nasdaq-100 Index / U.S. large growth equities.",
+        "VTI is broader by holdings count (3,507 vs. 102).",
+        "VTI's largest sector exposure is Technology; QQQ's is Technology.",
+        "VTI has the higher YTD return in the fixture snapshot (13.45% vs. 12.15%)."
+      ]
+    },
+    "VTI:VTI": {
+      "validation": {
+        "valid": false,
+        "message": "Choose two distinct ETFs before comparing."
+      },
+      "leftTicker": null,
+      "rightTicker": null,
+      "rows": [],
+      "explanation": []
+    }
+  },
+  "sources": [
+    {
+      "label": "SPDR SPY product page",
+      "publisher": "State Street Global Advisors",
+      "url": "https://www.ssga.com/us/en/intermediary/etfs/state-street-spdr-sp-500-etf-trust-spy"
+    },
+    {
+      "label": "SPDR SPY fact sheet",
+      "publisher": "State Street Global Advisors",
+      "url": "https://www.ssga.com/us/en/intermediary/library-content/products/factsheets/etfs/us/factsheet-us-en-spy.pdf"
+    },
+    {
+      "label": "Invesco QQQ overview and holdings",
+      "publisher": "Invesco",
+      "url": "https://www.invesco.com/qqq-etf/en/about.html"
+    },
+    {
+      "label": "Invesco QQQ performance",
+      "publisher": "Invesco",
+      "url": "https://www.invesco.com/qqq-etf/en/performance.html"
+    },
+    {
+      "label": "Vanguard VTI profile",
+      "publisher": "Vanguard",
+      "url": "https://investor.vanguard.com/investment-products/etfs/profile/vti"
+    },
+    {
+      "label": "Vanguard VTI fact sheet",
+      "publisher": "Vanguard",
+      "url": "https://fund-docs.vanguard.com/F0970.pdf"
+    }
+  ],
+  "fixtureMetadata": "Fixture field-date range: 2026-04-28 to 2026-09-23. Field-level dates: SPY: profile 2026-09-22; performance 2026-08-31; AUM 2026-09-22; holdings/sectors 2026-09-22/2026-09-22 | QQQ: profile 2026-09-21; performance 2026-08-30; AUM 2026-09-21; holdings/sectors 2026-09-21/2026-08-30 | VTI: profile 2026-08-31; performance 2026-08-31; AUM 2026-08-31; holdings/sectors 2026-08-31/2026-08-31.",
+  "disclaimer": "For informational/educational purposes only. This is not investment advice and not a recommendation or offer to buy or sell any security. Data may be delayed or inaccurate; verify figures with the fund issuer. Fixture fields use the per-field as-of dates shown in the comparison rows and metadata, not one common date."
+}

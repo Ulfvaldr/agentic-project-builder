@@ -22,7 +22,7 @@ class CliTests(unittest.TestCase):
             timeout=10,
         )
 
-    def test_help_lists_parallel_python_commands(self) -> None:
+    def test_help_lists_primary_python_commands(self) -> None:
         result = self.run_cli("--help")
 
         self.assertEqual(result.returncode, 0, result.stderr)
@@ -30,6 +30,7 @@ class CliTests(unittest.TestCase):
         self.assertIn("serve", result.stdout)
         self.assertIn("check-browser", result.stdout)
         self.assertIn("compare", result.stdout)
+        self.assertIn("build-browser-data", result.stdout)
 
 
 if __name__ == "__main__":
